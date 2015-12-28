@@ -2,6 +2,7 @@ import os
 import time
 from datetime import datetime
 import pandas as pd
+import codecs
 
 path = '/Users/michaelgu/Documents/scikit-learn-investing/data'
 
@@ -17,13 +18,16 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
 					date_stamp = datetime.strptime(file, '%Y%m%d%H%M%S.html')
 					unix_time = time.mktime(date_stamp.timetuple())
 					full_file_path = each_dir+'/'+file
-					source = open(full_file_path,'r').read()
+					
+					source = codecs.open(full_file_path,'r', 'utf-8').read()
 					try:
 						value = float(source.split(gather+':</td><td class="yfnc_tabledata1">')[1].split('</td>')[0])
 						df = df.append({'Date':date_stamp,'Unix':unix_time,'Ticker':ticker,'DE Ratio':value,}, ignore_index = True)
 					except Exception as e:
 						pass
 			
+			print('indexed data for:', each_dir)
+
 		save = gather.replace(' ','').replace(')','').replace('(','').replace('/','')+('.csv')
 		print(save)
 		df.to_csv(save)
