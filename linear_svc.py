@@ -42,40 +42,26 @@ FEATURES =  ['DE Ratio',
              'Short % of Float',
              'Shares Short (prior ']
 
-def Build_Data_Set(features = ["DE Ratio",
-							   "Trailing P/E"]):
-
+def Build_Data_Set():
 	data_df = pd.DataFrame.from_csv("key_stats.csv")
-
-	data_df = data_df[:100]
-
-	X = np.array(data_df[features].values)
+	data_df = data_df.reindex(np.random.permutation(data_df.index))
+	X = np.array(data_df[FEATURES].values)
 	X = preprocessing.scale(X)
-
 	y = (data_df["Status"]
 		.replace("underperform",0)
 		.replace("outperform",1)
 		.values.tolist())
-
 	return X,y
 
 def Analysis():
+	test_size = 1500
 	X, y = Build_Data_Set()
-
 	clf = svm.SVC(kernel ="linear", C=1.0)
-	clf.fit(X,y)
-
-	w = clf.coef_[0]
-	a = -w[0] / w[1]
-	xx = np.linspace(min(X[:, 0]), max(X[:, 0]))
-	yy = a * xx -clf.intercept_[0] / w[1]
-
-	h0 = plt.plot(xx,yy,"k-", label="non weighted")
-
-	plt.scatter(X[:,0],X[:,1])
-	plt.ylabel("Trailing P/E")
-	plt.xlabel("DE Ratio")
-	plt.legend()
-	plt.show()
+	clf.fit(X[:-test_size],y[:-test_size])
+	correct_count = 0
+	for x in range(1, test_size+1):
+		if clf.predict(X[-x])[0] == y[-x]:
+			correct_count += 1
+	print("Accuracy:", (correct_count/test_size)*100.00)
 
 Analysis()

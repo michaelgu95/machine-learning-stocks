@@ -235,21 +235,6 @@ def Key_Stats(gather=["Total Debt/Equity",
 						pass
 			# notify
 			print('indexed data for:', each_dir)
-
-		# plot the data
-		# for each_ticker in ticker_list:
-		# 	try:
-		# 		plot_df = df[(df['Ticker'] == each_ticker)]
-		# 		plot_df = plot_df.set_index(['Date'])
-		# 		if plot_df['Status'][-1] == "underperform":
-		# 			color = 'r'
-		# 		else:
-		# 			color = 'g'
-		# 		plot_df['Difference'].plot(label=each_ticker, color=color)
-		# 		plt.legend()
-		# 	except:
-		# 		pass
-		# plt.show()
 		
 		df.to_csv("key_stats.csv")
 
